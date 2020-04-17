@@ -292,11 +292,11 @@ Find_Summary <- function(daily_by_season){
   a <- Indicators %>% filter(Type == 'min') %>% unnest()
   b <- Indicators %>% filter(Type == 'max') %>% unnest()
   
-  ab <- bind_cols(a, dplyr::select(b, -Type, -day, -month, -year)) %>%
-    dplyr::mutate(Type = 'mean_mm' , prec = (prec+prec1)/2, tmax = (tmax+tmax1)/2, tmin = (tmin + tmin1)/2 ) %>%
-    dplyr::select(-prec1, -tmin1, -tmax1) %>% nest(-Type)
-  
-  Indicators <- Indicators %>% bind_rows(., ab)
+  # ab <- bind_cols(a, dplyr::select(b, -Type, -day, -month, -year)) %>%
+  #   dplyr::mutate(Type = 'mean_mm' , prec = (prec+prec1)/2, tmax = (tmax+tmax1)/2, tmin = (tmin + tmin1)/2 ) %>%
+  #   dplyr::select(-prec1, -tmin1, -tmax1) %>% nest(-Type)
+  # 
+  # Indicators <- Indicators %>% bind_rows(., ab)
   
   return(Indicators)}
 
@@ -483,8 +483,8 @@ function_to_save <- function(station, Esc_all, path_out){
   
   # Creation of the data folder (where the results will be saved). 
   # ifelse(dir.exists(glue::glue('{path_out}validation')) == FALSE, dir.create(glue::glue('{path_out}validation')), 'ok')
-  ifelse(dir.exists(paste0(path_out, '/', 'validation')) == FALSE, 
-         dir.create(paste0(path_out, '/', 'validation')), 'ok')
+ # ifelse(dir.exists(paste0(path_out, '/', 'validation')) == FALSE, 
+  #       dir.create(paste0(path_out, '/', 'validation')), 'ok')
   
   
   # Save daily sceneries.
@@ -506,10 +506,10 @@ function_to_save <- function(station, Esc_all, path_out){
     dplyr::select(Base_years) %>% 
     unnest %>% 
     mutate_all(.funs = as.integer) %>%
-    write_csv(., path = paste0(path_out, '/validation/', station, '_Escenario_A.csv'))
+    write_csv(., path = paste0(path_out, '/summary/', station, '_years.csv'))
   
-  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  summary variables files creation.
+ # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ # summary variables files creation.
   Levels <- Esc_C %>%
     dplyr::select(data) %>%
     unnest %>%
@@ -531,26 +531,26 @@ function_to_save <- function(station, Esc_all, path_out){
               tmin_avg = mean(tmin), tmin_max = max(tmin), tmin_min = min(tmin)) %>%
     ungroup()
 
-  summaries <- summaries %>%
-    gather(variable, values, -month, -year) %>%
-    nest(-variable) %>%
-    mutate(data = purrr::map2(.x = variable, .y = data, .f = function(.x, .y){
-
-      if(str_detect(.x , 'sol_rad_') == TRUE){
-        .y <- .y  %>%
-          set_names(c('year', 'month', str_replace(.x , 'sol_rad_', '')))
-      } else{
-        .y <- .y  %>%
-          set_names(c('year', 'month', str_extract( .x ,'_[a-z]+') %>% str_replace('_', '')))
-      }
-      return(.y)})) %>%
-    # mutate(file_name = glue::glue('{path_out}summary/{station}_{variable}.csv'))
-    mutate(file_name = paste0(path_out, '/summary/', station, '_', variable, '.csv'))
-
-
-  # Aqui se guardan los archivos...
-  walk2(.x = summaries$data, .y = summaries$file_name,
-        .f = function(.x, .y){write_csv(x = .x, path = .y)})
+  # summaries <- summaries %>%
+  #   gather(variable, values, -month, -year) %>%
+  #   nest(-variable) %>%
+  #   mutate(data = purrr::map2(.x = variable, .y = data, .f = function(.x, .y){
+  # 
+  #     if(str_detect(.x , 'sol_rad_') == TRUE){
+  #       .y <- .y  %>%
+  #         set_names(c('year', 'month', str_replace(.x , 'sol_rad_', '')))
+  #     } else{
+  #       .y <- .y  %>%
+  #         set_names(c('year', 'month', str_extract( .x ,'_[a-z]+') %>% str_replace('_', '')))
+  #     }
+  #     return(.y)})) %>%
+  #   # mutate(file_name = glue::glue('{path_out}summary/{station}_{variable}.csv'))
+  #   mutate(file_name = paste0(path_out, '/summary/', station, '_', variable, '.csv'))
+  # 
+  # 
+  # # Aqui se guardan los archivos...
+  # walk2(.x = summaries$data, .y = summaries$file_name,
+  #       .f = function(.x, .y){write_csv(x = .x, path = .y)})
 }
 
 

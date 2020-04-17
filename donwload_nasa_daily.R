@@ -49,11 +49,11 @@ download_nasa <- function(dir,start,end,lat,lon){
 
 ## usage
 
-main_dir  <- "D:/resampling"                    ### Directorio de trabajo 
-start_date<- "19830701"                         ### Fecha inicial de descarga(año-mes-día)
-end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")      ### Fecha final de descarga(año-mes-día)
-latitud   <- 4.6                                ### Latitud del sitio de interés(en grados decimales)
-longitud  <- -76                                ### Longitud del sitio de interés(en grados decimales)
+# main_dir  <- "D:/resampling"                    ### Directorio de trabajo 
+# start_date<- "19830701"                         ### Fecha inicial de descarga(año-mes-día)
+# end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")      ### Fecha final de descarga(año-mes-día)
+# latitud   <- 4.6                                ### Latitud del sitio de interés(en grados decimales)
+# longitud  <- -76                                ### Longitud del sitio de interés(en grados decimales)
 
 object_empty <- download_nasa(main_dir,start_date,end_date,latitud,longitud)
 
