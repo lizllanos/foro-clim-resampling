@@ -24,7 +24,7 @@ download_nasa <- function(dir,start,end,lat,lon){
   months=as.numeric(substr(rownames(data_raw),5,6))
   days=as.numeric(substr(rownames(data_raw),7,8))
   
-  data_final=data.frame(day=days,month=months,year=years,precip=data_raw[,2],tmax=data_raw[,3],tmin=data_raw[,4],srad=data_raw[,1])
+  data_final=data.frame(day=days,month=months,year=years,precip=data_raw[,2],tmax=data_raw[,3],tmin=data_raw[,4])#,srad=data_raw[,1])
 
   if(sum(data_final$precip==-999)>0){
     pos=which(data_final$precip==-999)
@@ -38,10 +38,10 @@ download_nasa <- function(dir,start,end,lat,lon){
     pos=which(data_final$tmin==-999)
     data_final$tmin[pos]= round(mean(data_final$tmin[-pos]),2)
   }
-  if(sum(data_final$srad==-999)>0){
-    pos=which(data_final$srad==-999)
-    data_final$srad[pos]= round(mean(data_final$srad[-pos]),2)
-  }
+  # if(sum(data_final$srad==-999)>0){
+  #   pos=which(data_final$srad==-999)
+  #   data_final$srad[pos]= round(mean(data_final$srad[-pos]),2)
+  # }
   
   write.csv(data_final,paste0(main_dir,"data_daily.csv"),row.names=F)
   return(cat("Succesfully donwloaded data"))
