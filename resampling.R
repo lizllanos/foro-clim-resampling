@@ -323,7 +323,7 @@ resampling <-  function(data, CPT_prob, year_forecast){
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   season1 <- CPT_prob %>% dplyr::select(Season) %>% unique() %>% filter(row_number() == 1) %>% .$Season
   
-  year_f_leap <- ifelse(season1 %in% c('ASO', 'SON', 'OND', 'NDJ', 'DJF'), year_forecast , year_forecast)
+  year_f_leap <- ifelse(season1 %in% c('ASO', 'SON', 'OND', 'NDJ', 'DJF'), year_forecast +1, year_forecast)
   
   # Create a new data (with standard february).
   data <- data %>% 
@@ -564,7 +564,7 @@ plot_prob <- function(pronostico, id_label = NULL){
     geom_col(position = "dodge", color="gray") +
     theme_minimal() +
     scale_fill_manual(values = c(above = "blue", normal = "lightgreen", below = "red")) +
-    labs(title = "Prediccion Climatica Estacional", 
+    labs(title = "Prediccion Climática Estacional", 
          subtitle = id_label,
          x = "Trimestre",
          y = "Probabilidad (%)")
@@ -602,18 +602,13 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
     ggplot(aes(month, value, fill= var, group = month)) +
     geom_boxplot() +
     scale_x_continuous(labels = function(x) month.abb[x], breaks = 1:12) +
-    #  stat_summary(fun.data = mean_cl_normal, geom="bar") +
-    #  geom_line(data = monthly_summary %>% 
-    #                pivot_longer(cols = -c(month), names_to = "var", values_to = "value"), 
-    #              aes(month, value, color = var)) +
-    #           scale_alpha_discrete(range = c(0.9, 0.5)) + 
     facet_grid(var ~ ., scales = "free", labeller = labeller(var = var_label)) +
     theme_bw() + guides(fill=FALSE) +
     theme(
       panel.grid.minor = element_blank(),
       strip.background=element_rect(fill="white", size=1.5, linetype="solid"),
       strip.text = element_text(face = "bold")) +
-    labs(title = "Climatologia Historica",
+    labs(title = "Climatología Histórica",
          subtitle = id_label,
          x = "Mes",
          y =  NULL) +
