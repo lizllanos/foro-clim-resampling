@@ -576,7 +576,7 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
   
   #Set Names and labels  
   var_name = c("rain", "prec", "srad", "tmin", "tmax", "rhum", "wvel")
-  var_label = paste(var_name, c('(mm)', '(mm)', '(MJ/m²d)', '(°C)', '(°C)', '(%)', '(m/s)'))
+  var_label = paste(var_name, c('(mm)', '(mm)', '(MJ/m2d)', '(C)', '(C)', '(%)', '(m/s)'))
   names(var_label) <- var_name
   
   to_monthly <- function(data, ...){
