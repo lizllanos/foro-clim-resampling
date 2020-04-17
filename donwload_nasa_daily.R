@@ -43,7 +43,7 @@ download_nasa <- function(dir,start,end,lat,lon){
   #   data_final$srad[pos]= round(mean(data_final$srad[-pos]),2)
   # }
   
-  write.csv(data_final,paste0(main_dir,"data_daily.csv"),row.names=F)
+  write.csv(data_final,paste0(main_dir,"data_daily_nasa.csv"),row.names=F)
   return(cat("Succesfully donwloaded data"))
 }
 
