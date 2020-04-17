@@ -9,7 +9,7 @@
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
 # Packages
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
-list.of.packages <- c('tidyverse','data.table', 'lubridate', 'rjson','stringr')
+list.of.packages <- c('tidyverse','data.table', 'lubridate', 'rjson','stringr','plotly')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
 if(length(new.packages) > 0) install.packages(new.packages,dependencies = TRUE)
@@ -18,6 +18,8 @@ rm(new.packages)
 library(tidyverse)
 library(data.table)
 library(lubridate)
+library(plotly)
+
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Resampling Methodology 
 
@@ -558,16 +560,17 @@ function_to_save <- function(station, Esc_all, path_out){
 ## Graficar Remuestreo 
 plot_prob <- function(pronostico, id_label = NULL){
   
-  pronostico %>% mutate(Type = factor(Type, c("above", "normal", "below")),
-                        Season = factor(Season, c('DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ'))) %>%
-    ggplot(aes(x = Season, y = Prob, fill = Type)) + 
-    geom_col(position = "dodge", color="gray") +
-    theme_minimal() +
-    scale_fill_manual(values = c(above = "blue", normal = "lightgreen", below = "red")) +
-    labs(title = "Prediccion Climática Estacional", 
-         subtitle = id_label,
-         x = "Trimestre",
-         y = "Probabilidad (%)")
+  pronostico= pronostico %>% mutate(Type = factor(Type, c("above", "normal", "below")),
+                                    Season = factor(Season, c('DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ'))) 
+  
+  ggplotly(ggplot(pronostico,aes(x = Season, y = Prob, fill = Type)) + 
+             geom_col(position = "dodge", color="gray") +
+             theme_minimal() +
+             scale_fill_manual(values = c(above = "blue", normal = "lightgreen", below = "red")) +
+             labs(title = "Prediccion Climática Estacional", 
+                  
+                  x = "Trimestre",
+                  y = "Probabilidad (%)"))
   
   
 }
