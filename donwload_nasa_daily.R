@@ -49,15 +49,15 @@ download_nasa <- function(dir,start,end,lat,lon){
 
 if(isTRUE(nasa_power) & !file.exists(paste0(directorio_datos,"data_nasa.csv"))){
   main_dir  <- directorio_datos                   ### Directorio de trabajo 
-  start_date<- "19830701"  ### Fecha inicial de descarga(año-mes-día)
-  end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")### Fecha final de descarga(año-mes-día)
+  start_date<- "19830701"  ### Fecha inicial de descarga(aÃ±o-mes-dÃ­a)
+  end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")### Fecha final de descarga(aÃ±o-mes-dÃ­a)
 }
   ## usage
 
 # main_dir  <- "D:/resampling"                    ### Directorio de trabajo 
-# start_date<- "19830701"                         ### Fecha inicial de descarga(año-mes-día)
-# end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")      ### Fecha final de descarga(año-mes-día)
-# latitud   <- 4.6                                ### Latitud del sitio de interés(en grados decimales)
-# longitud  <- -76                                ### Longitud del sitio de interés(en grados decimales)
+# start_date<- "19830701"                         ### Fecha inicial de descarga(aÃ±o-mes-dÃ­a)
+# end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")      ### Fecha final de descarga(aÃ±o-mes-dÃ­a)
+# latitud   <- 4.6                                ### Latitud del sitio de interÃ©s(en grados decimales)
+# longitud  <- -76                                ### Longitud del sitio de interÃ©s(en grados decimales)
 
 

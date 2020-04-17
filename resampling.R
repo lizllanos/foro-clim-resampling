@@ -564,7 +564,7 @@ plot_prob <- function(pronostico, id_label = NULL){
     geom_col(position = "dodge", color="gray") +
     theme_minimal() +
     scale_fill_manual(values = c(above = "blue", normal = "lightgreen", below = "red")) +
-    labs(title = "Prediccion Climática Estacional", 
+    labs(title = "Prediccion ClimÃ¡tica Estacional", 
          subtitle = id_label,
          x = "Trimestre",
          y = "Probabilidad (%)")
@@ -608,7 +608,7 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
       panel.grid.minor = element_blank(),
       strip.background=element_rect(fill="white", size=1.5, linetype="solid"),
       strip.text = element_text(face = "bold")) +
-    labs(title = "Climatología Histórica",
+    labs(title = "ClimatologÃ­a HistÃ³rica",
          subtitle = id_label,
          x = "Mes",
          y =  NULL) +
