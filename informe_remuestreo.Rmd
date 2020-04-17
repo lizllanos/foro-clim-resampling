@@ -80,21 +80,15 @@ object_empty <- download_nasa(main_dir,start_date,end_date,latitud,longitud)
 directorio_resultados <- paste0(directorio, "/resultados/")
 
 ## Read Data
-pos<-which(grepl('data', list.files(directorio_datos))==T)
-pos1<-which(grepl('pronostico', list.files(directorio_datos))==T)
+pos<-which(grepl('data', list.files(directorio_datos))==T)[1]
+pos1<-which(grepl('pronostico', list.files(directorio_datos))==T)[1]
 
 data_historic <- read_csv(list.files(directorio_datos, full.names =T)[pos]) %>% 
-  mutate(day = day(date), 
-         month = month(date),
-         year = year(date)) %>%
-  rename(prec = rain) %>%
+  rename(prec = precip) %>%
   dplyr::select(day:year, prec, tmax, tmin)
 
 pronostico <- read_csv(list.files(directorio_datos, full.names =T)[pos1])
 
-## Save escenaries(Opcional)
-dir.create(directorio_resultados)
-function_to_save(localidad, data_resampling, directorio_resultados)
 
 ```
 
@@ -104,7 +98,7 @@ function_to_save(localidad, data_resampling, directorio_resultados)
 Aquí se observa el pronóstico
 
 ```{r pressure, echo=FALSE}
-View(pronostico)
+pronostico
 plot_prob(pronostico)
 
 ```
@@ -113,7 +107,7 @@ plot_prob(pronostico)
 Aquí se observa el comportamiento histórico del clima
 
 ```{r, echo=FALSE}
-View(head(data_historic, 10))
+head(data_historic, 10)
 
 plot_clima_hist(data_historic, localidad)
 
@@ -125,6 +119,10 @@ Aquí ya se corre el remuestreo
 ```{r, echo=FALSE}
 data_resampling <- resampling(data_historic, pronostico, year_forecast)
 plot_resampling(data_resampling, data_historic, localidad)
+
+## Save escenaries(Opcional)
+dir.create(directorio_resultados)
+function_to_save(localidad, data_resampling, directorio_resultados)
 
 ```
 
