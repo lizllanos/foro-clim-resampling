@@ -55,5 +55,4 @@ download_nasa <- function(dir,start,end,lat,lon){
 # latitud   <- 4.6                                ### Latitud del sitio de interés(en grados decimales)
 # longitud  <- -76                                ### Longitud del sitio de interés(en grados decimales)
 
-object_empty <- download_nasa(main_dir,start_date,end_date,latitud,longitud)
 
