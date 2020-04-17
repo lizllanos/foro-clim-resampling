@@ -43,11 +43,16 @@ download_nasa <- function(dir,start,end,lat,lon){
   #   data_final$srad[pos]= round(mean(data_final$srad[-pos]),2)
   # }
   
-  write.csv(data_final,paste0(main_dir,"data_daily_nasa.csv"),row.names=F)
+  write.csv(data_final,paste0(main_dir,"data_nasa.csv"),row.names=F)
   return(cat("Succesfully donwloaded data"))
 }
 
-## usage
+if(isTRUE(nasa_power) & !file.exists(paste0(directorio_datos,"data_nasa.csv"))){
+  main_dir  <- directorio_datos                   ### Directorio de trabajo 
+  start_date<- "19830701"  ### Fecha inicial de descarga(año-mes-día)
+  end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")### Fecha final de descarga(año-mes-día)
+}
+  ## usage
 
 # main_dir  <- "D:/resampling"                    ### Directorio de trabajo 
 # start_date<- "19830701"                         ### Fecha inicial de descarga(año-mes-día)

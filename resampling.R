@@ -9,15 +9,15 @@
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
 # Packages
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
-library(tidyverse)
-#library(parallel)
-library(lubridate)
-#library(jsonlite)
-#library(raster)
-#library(glue)
-#library(future)
-#library(furrr)
+list.of.packages <- c('tidyverse','data.table', 'lubridate', 'rjson','stringr')
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
+if(length(new.packages) > 0) install.packages(new.packages,dependencies = TRUE)
+rm(new.packages)
+
+library(tidyverse)
+library(data.table)
+library(lubridate)
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Resampling Methodology 
 
