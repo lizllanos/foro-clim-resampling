@@ -626,7 +626,7 @@ plot_resampling <- function(data_resampling, data_historic, id_label = NULL) {
   
   #Set Names and labels  
   var_name = c("rain", "prec", "srad", "tmin", "tmax", "rhum", "wvel")
-  var_label = paste(var_name, c('(mm)', '(mm)', '(MJ/m²d)', '(°C)', '(°C)', '(%)', '(m/s)'))
+  var_label = paste(var_name, c('(mm)', '(mm)', '(MJ/m2d)', '(C)', '(C)', '(%)', '(m/s)'))
   names(var_label) <- var_name
   
   #Function to summarize daily to monthly data 
