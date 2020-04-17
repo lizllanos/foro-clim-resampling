@@ -198,8 +198,8 @@ year_function <- function(base_cat, mothly_data){
     mothly_data <- mothly_data %>% 
       filter(condtion == cat$Type) %>% ####################################
     unnest %>% 
-      sample_n(size = 1) %>% 
-      dplyr::select(-prec)
+      sample_n(size = 1) #%>% 
+    # dplyr::select(-prec)
     
     return(mothly_data)}
   
@@ -323,6 +323,7 @@ resampling <-  function(data, CPT_prob, year_forecast){
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   # 1. Fix february: depends if leap year it's true or false.
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  
   season1 <- CPT_prob %>% dplyr::select(Season) %>% unique() %>% filter(row_number() == 1) %>% .$Season
   
   year_f_leap <- ifelse(season1 %in% c('ASO', 'SON', 'OND', 'NDJ', 'DJF'), year_forecast +1, year_forecast)
@@ -375,12 +376,14 @@ resampling <-  function(data, CPT_prob, year_forecast){
     mutate(order = paste0(letters[1:2], '.',Season)) %>% 
     dplyr::select(order, cat) %>% 
     unnest %>%
-    dplyr::select(order, year) %>% 
-    nest(-order) %>%
-    pivot_wider(names_from = order, values_from = data) %>%
-    unnest %>% 
-    set_names(paste0(letters[1:2], '.',  Times$Season)) %>% 
-    cbind(id = 1:100, .)
+    dplyr::select(order, year, prec, condtion) %>% 
+    separate(order, into = c('order', 'season'), sep = '\\.') %>% 
+    cbind(id = 1:100, .)# %>% 
+  # nest(-order) #%>%
+  # pivot_wider(names_from = order, values_from = data) %>%
+  # unnest %>% 
+  # set_names(paste0(letters[1:2], '.',  Times$Season)) %>% 
+  
   
   # This function extract daily data using sample year.  
   daily_data <- Times %>% 
@@ -419,10 +422,23 @@ resampling <-  function(data, CPT_prob, year_forecast){
     unnest %>% 
     arrange(Type) %>%
     mutate(year = year_forecast) %>% 
-    mutate(year = ifelse(cond_change == TRUE & month < 6, year + 1, year)) %>% 
-    dplyr::select(-Season) %>% 
-    nest(-Type)
+    mutate(year = ifelse(cond_change == TRUE & month < 6, year + 1, year))
   
+  # =------------------------------------------------------------
+  Base_years <- Esc_Type %>% 
+    dplyr::select(Type, Season, year, prec)%>% 
+    group_by(Type, Season) %>% 
+    summarise(year = mean(year), prec = sum(prec)) %>% 
+    ungroup() %>% 
+    filter(Type != 'median') %>% 
+    arrange(Type) %>% 
+    mutate(id = NA_real_, condtion = NA_character_, order = Type, season = Season ) %>% 
+    dplyr::select(id, order, season, year,  prec, condtion) %>% 
+    bind_rows(Base_years) %>% 
+    arrange(id)
+  # =-------------------------------------------------------------------------
+  
+  Esc_Type <- Esc_Type %>% dplyr::select(-Season) %>% nest(-Type)
   
   
   Esc_Type <- data_to_esc %>%
@@ -436,6 +452,7 @@ resampling <-  function(data, CPT_prob, year_forecast){
     dplyr::select(-Season) %>% 
     nest(-Type) %>%  
     bind_rows(Esc_Type , .)
+  
   
   
   # This object is the mix with 3 data set (sceneries, sample years and sceneries types).
@@ -485,7 +502,7 @@ function_to_save <- function(station, Esc_all, path_out){
   
   # Creation of the data folder (where the results will be saved). 
   # ifelse(dir.exists(glue::glue('{path_out}validation')) == FALSE, dir.create(glue::glue('{path_out}validation')), 'ok')
- # ifelse(dir.exists(paste0(path_out, '/', 'validation')) == FALSE, 
+  # ifelse(dir.exists(paste0(path_out, '/', 'validation')) == FALSE, 
   #       dir.create(paste0(path_out, '/', 'validation')), 'ok')
   
   
@@ -510,14 +527,14 @@ function_to_save <- function(station, Esc_all, path_out){
     mutate_all(.funs = as.integer) %>%
     write_csv(., path = paste0(path_out, '/summary/', station, '_years.csv'))
   
- # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
- # summary variables files creation.
+  # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  # summary variables files creation.
   Levels <- Esc_C %>%
     dplyr::select(data) %>%
     unnest %>%
     dplyr::select(month) %>%
     unique
-
+  
   summaries <- Esc_C %>%
     dplyr::select(id, data) %>%
     unnest %>%
@@ -532,7 +549,7 @@ function_to_save <- function(station, Esc_all, path_out){
               tmax_avg = mean(tmax), tmax_max = max(tmax), tmax_min = min(tmax),
               tmin_avg = mean(tmin), tmin_max = max(tmin), tmin_min = min(tmin)) %>%
     ungroup()
-
+  
   # summaries <- summaries %>%
   #   gather(variable, values, -month, -year) %>%
   #   nest(-variable) %>%
