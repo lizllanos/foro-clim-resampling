@@ -4,6 +4,14 @@ library(data.table)
 library(lubridate)
 library(plotly)
 
+tll = theme(panel.grid.major = element_blank(),panel.background = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line    = element_line(color='lightgrey'),
+            axis.ticks =element_line(color='grey'),
+            axis.text.x = element_text( vjust = 0),
+            text = element_text(size=15))
+
+
 to_monthly <- function(data, ...){
   data %>% 
     group_by(year, month) %>%
@@ -65,7 +73,7 @@ plot_prob <- function(pronostico, id_label = NULL){
   
   ggplotly(ggplot(pronostico,aes(x = Season, y = Prob, fill = Type)) + 
              geom_col(position = "dodge", color="gray") +
-             theme_minimal() +
+             tll +
              scale_fill_manual(values = c(above = "blue", normal = "lightgreen", below = "red")) +
              labs(title = "Prediccion Climática Estacional", 
                   
@@ -102,8 +110,8 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
                    strip.text = element_text(face = "bold")) +
              labs(title = "Climatología Histórica",
                   subtitle = id_label,
-                  x = "Mes",
-                  y =  NULL) +
+                  x = " ",
+                  y =  NULL) +tll+
              scale_fill_manual(values = c(prec = "#619CFF", tmax = "orange1", tmin = "gold2"))+
              scale_color_manual(values = c(prec = "#619CFF", tmax = "orange1", tmin = "gold2")))
   
@@ -114,12 +122,6 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
   data_trim = quarterly_data(data_ini=data_historic,trim_ini=pronostico[1,1])
   data_trim$Clase = "Histórico"
   
-  #Set Names and labels  
-  var_name = c("rain", "prec", "srad", "tmin", "tmax", "rhum", "wvel")
-  var_label = paste(var_name, c('(mm)', '(mm)', '(MJ/m2d)', '(C)', '(C)', '(%)', '(m/s)'))
-  names(var_label) <- var_name
-  
- 
   
   data_plot_clim = data_trim %>%
     dplyr::select(-c(year)) %>%
@@ -150,11 +152,38 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
                    strip.text = element_text(face = "bold")) +
              labs(title = "Comparación trimestral Histórico vs Escenarios",
                   
-                  x = "Mes",
-                  y =  NULL) 
+                  x = "Trimestre",
+                  y =  NULL) +tll
   
   ggplotly(p)%>%layout(boxmode = "group")
   }
 
-# clim_trim = aggregate(data_trim[,1],list(season=data_trim$trim),mean)
+plot_years <- function(resampling_y){
+  ggplot (resampling_y, aes(as.character(year)))+ geom_bar()+facet_grid(~season)
+  
+  
+ y_1 = resampling_y %>% filter(season==unique(resampling_y$season)[1]) %>% 
+    count(season, year) %>%
+    group_by(season) %>%          # now required with changes to dplyr::count()
+    mutate(prop = prop.table(n)) %>% arrange(desc(n)) %>% slice(1:10)
+  
+y_2 =  resampling_y %>% filter(season==unique(resampling_y$season)[2]) %>% 
+    count(season, year) %>%
+    group_by(season) %>%          # now required with changes to dplyr::count()
+    mutate(prop = prop.table(n)) %>% arrange(desc(n))%>% slice(1:10) 
+  
+ 
+a =ggplot(y_1, aes(x=reorder(as.character(year), -n), y=n))+
+  geom_bar(stat='identity',alpha=0.5)+tll +xlab("")+ylab("Frecuencia")+
+  facet_grid(~season)
+  
+
+
+ b=   ggplot(y_2, aes(x=reorder(as.character(year), -n), y=n))+
+    geom_bar(stat='identity',alpha=0.5)+tll +xlab("")+ylab(" ")+
+   facet_grid(~season)
+ grid.arrange(a, b, nrow = 1, top="Top 10 de los años más frecuentes ")
+    
+    }
+
 
