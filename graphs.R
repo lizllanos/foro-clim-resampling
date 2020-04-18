@@ -17,7 +17,7 @@ to_monthly <- function(data, ...){
     ungroup() 
 }
 
-quarterly_data=function(data_ini,trim_ini){
+quarterly_data <- function(data_ini,trim_ini){
   #data_ini=data_historic;trim_ini=pronostico[1,1]
   data = to_monthly(data_ini)[,1:3]
   season = factor(c('DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ'),
@@ -57,9 +57,6 @@ quarterly_data=function(data_ini,trim_ini){
   
   return(all_output)
 }
-
-data_trim = quarterly_data(data_ini=data_historic,trim_ini=pronostico[1,1])
-data_trim$Clase = "Histórico"
 
 plot_prob <- function(pronostico, id_label = NULL){
   
@@ -112,7 +109,10 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
   
 }
 
-plot_clima_trim <- function(data_trim, resampling_y,id_label = NULL){
+plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL){
+  
+  data_trim = quarterly_data(data_ini=data_historic,trim_ini=pronostico[1,1])
+  data_trim$Clase = "Histórico"
   
   #Set Names and labels  
   var_name = c("rain", "prec", "srad", "tmin", "tmax", "rhum", "wvel")
