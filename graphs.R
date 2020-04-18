@@ -153,7 +153,7 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
              labs(title = "Comparación trimestral Histórico vs Escenarios",
                   
                   x = "Trimestre",
-                  y =  NULL) +tll+facet_grid(~season)
+                  y =  NULL) +tll
   
   ggplotly(p)%>%layout(boxmode = "group")
   }
