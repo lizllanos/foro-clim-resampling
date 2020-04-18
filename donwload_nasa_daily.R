@@ -48,8 +48,8 @@ download_nasa <- function(dir,start,end,lat,lon){
 }
 
   main_dir  <- directorio_datos                   ### Directorio de trabajo 
-  start_date<- "19830701"  ### Fecha inicial de descarga(año-mes-día)
-  end_date  <- str_replace_all(Sys.Date()-31,pattern = "-","")### Fecha final de descarga(año-mes-día)
+  start_date<- "19840101"  ### Fecha inicial de descarga(año-mes-día)
+  end_date  <- "20191231"  ### Fecha final de descarga(año-mes-día)
 
   ## usage
 
