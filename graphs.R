@@ -175,13 +175,13 @@ y_2 =  resampling_y %>% filter(season==unique(resampling_y$season)[2]) %>%
  
 a =ggplot(y_1, aes(x=reorder(as.character(year), -n), y=n))+
   geom_bar(stat='identity',alpha=0.5)+tll +xlab("")+ylab("Frecuencia")+
-  facet_grid(~season)
+  facet_grid(~season)+coord_flip()
   
 
 
  b=   ggplot(y_2, aes(x=reorder(as.character(year), -n), y=n))+
-    geom_bar(stat='identity',alpha=0.5)+tll +xlab("")+ylab(" ")+
-   facet_grid(~season)
+    geom_bar(stat='identity',alpha=0.5)+tll +xlab("")+ylab("Frecuencia ")+
+   facet_grid(~season)+coord_flip()
  grid.arrange(a, b, nrow = 1, top="Top 10 de los años más frecuentes ")
     
     }
