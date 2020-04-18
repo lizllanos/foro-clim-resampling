@@ -108,7 +108,7 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
                    panel.grid.minor = element_blank(),
                    strip.background=element_rect(fill="white", size=1.5, linetype="solid"),
                    strip.text = element_text(face = "bold")) +
-             labs(title = "Climatología Histórica",
+             labs(title = "Comportamiento Histórico por variable",
                   subtitle = id_label,
                   x = " ",
                   y =  NULL) +tll+
@@ -153,7 +153,7 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
              labs(title = "Comparación trimestral Histórico vs Escenarios",
                   
                   x = "Trimestre",
-                  y =  NULL) +tll
+                  y =  NULL) +tll+facet_grid(~season)
   
   ggplotly(p)%>%layout(boxmode = "group")
   }
