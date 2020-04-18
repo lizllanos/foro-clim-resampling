@@ -386,7 +386,7 @@ resampling <-  function(data, CPT_prob, year_forecast){
   
   
   # This function extract daily data using sample year.  
-  daily_data <- Times %>% 
+  daily_data <- Times %>% mutate(cat = purrr::map(.x = cat, .f = function(x){dplyr::select(x,  -prec)})) %>%
     mutate(daily_data = purrr::map2(.x = Season, .y = cat, .f = day_sample, 
                                     data = data, Intial_year = Intial_year, 
                                     last_year = last_year)) %>% 
@@ -497,8 +497,8 @@ function_to_save <- function(station, Esc_all, path_out){
   
   # Creation of the data folder (where the results will be saved). 
   # ifelse(dir.exists(glue::glue('{path_out}summary')) == FALSE, dir.create(glue::glue('{path_out}summary')), 'ok')
-  ifelse(dir.exists(paste0(path_out, '/','summary')) == FALSE, 
-         dir.create(paste0(path_out, '/','summary')), 'ok')
+  # ifelse(dir.exists(paste0(path_out, '/','summary')) == FALSE, 
+  #        dir.create(paste0(path_out, '/','summary')), 'ok')
   
   # Creation of the data folder (where the results will be saved). 
   # ifelse(dir.exists(glue::glue('{path_out}validation')) == FALSE, dir.create(glue::glue('{path_out}validation')), 'ok')
@@ -511,44 +511,44 @@ function_to_save <- function(station, Esc_all, path_out){
         .f = function(.x, .y){ readr::write_csv(x = .x, path = .y)})
   
   # Save scenarios type. 
-  Type_Esc <- Esc_all %>% 
-    dplyr::select(Esc_Type) %>% 
-    unnest %>% 
-    mutate(data = purrr::map(.x = data, .f = function(x){mutate(x, day = as.integer(day), month = as.integer(month), year = as.integer(year))}))%>%
-    mutate(file_name = paste0(path_out, '/summary/', station, '_escenario_', Type, '.csv'))
-  
-  walk2(.x = Type_Esc$data, .y = Type_Esc$file_name, 
-        .f = function(.x, .y){ write_csv(x = .x, path = .y)})
+  # Type_Esc <- Esc_all %>% 
+  #   dplyr::select(Esc_Type) %>% 
+  #   unnest %>% 
+  #   mutate(data = purrr::map(.x = data, .f = function(x){mutate(x, day = as.integer(day), month = as.integer(month), year = as.integer(year))}))%>%
+  #   mutate(file_name = paste0(path_out, '/summary/', station, '_escenario_', Type, '.csv'))
+  # 
+  # walk2(.x = Type_Esc$data, .y = Type_Esc$file_name, 
+  #       .f = function(.x, .y){ write_csv(x = .x, path = .y)})
   
   # Save resampling years.
   Esc_all %>% 
     dplyr::select(Base_years) %>% 
-    unnest %>% 
-    mutate_all(.funs = as.integer) %>%
-    write_csv(., path = paste0(path_out, '/summary/', station, '_years.csv'))
+    unnest %>% slice(-(n()-3):-n())%>%
+    # mutate_all(.funs = as.integer) %>%
+    write_csv(., path = paste0(path_out, '/', station,'/',station, '_years.csv'))
   
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   # summary variables files creation.
-  Levels <- Esc_C %>%
-    dplyr::select(data) %>%
-    unnest %>%
-    dplyr::select(month) %>%
-    unique
+  # Levels <- Esc_C %>%
+  #   dplyr::select(data) %>%
+  #   unnest %>%
+  #   dplyr::select(month) %>%
+  #   unique
   
-  summaries <- Esc_C %>%
-    dplyr::select(id, data) %>%
-    unnest %>%
-    mutate(month = factor(month,Levels$month))  %>%
-    group_by(id, month, year) %>%
-    summarise(prec = sum(prec), tmax = mean(tmax), tmin = mean(tmin)) %>%
-    ungroup() %>%
-    dplyr::select(-id) %>%
-    group_by(month) %>%
-    group_by(year, month) %>%
-    summarise(prec_avg = mean(prec), prec_max = max(prec), prec_min = min(prec),
-              tmax_avg = mean(tmax), tmax_max = max(tmax), tmax_min = min(tmax),
-              tmin_avg = mean(tmin), tmin_max = max(tmin), tmin_min = min(tmin)) %>%
-    ungroup()
+  # summaries <- Esc_C %>%
+  #   dplyr::select(id, data) %>%
+  #   unnest %>%
+  #   mutate(month = factor(month,Levels$month))  %>%
+  #   group_by(id, month, year) %>%
+  #   summarise(prec = sum(prec), tmax = mean(tmax), tmin = mean(tmin)) %>%
+  #   ungroup() %>%
+  #   dplyr::select(-id) %>%
+  #   group_by(month) %>%
+  #   group_by(year, month) %>%
+  #   summarise(prec_avg = mean(prec), prec_max = max(prec), prec_min = min(prec),
+  #             tmax_avg = mean(tmax), tmax_max = max(tmax), tmax_min = min(tmax),
+  #             tmin_avg = mean(tmin), tmin_max = max(tmin), tmin_min = min(tmin)) %>%
+  #   ungroup()
   
   # summaries <- summaries %>%
   #   gather(variable, values, -month, -year) %>%
