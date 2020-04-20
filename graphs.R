@@ -3,6 +3,7 @@ library(tidyverse)
 library(data.table)
 library(lubridate)
 library(plotly)
+library(tidyr)
 
 tll = theme(panel.grid.major = element_blank(),panel.background = element_blank(),
             panel.grid.minor = element_blank(),
