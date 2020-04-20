@@ -96,7 +96,7 @@ plot_clima_hist <- function(data_historic, id_label = NULL){
   
   data_plot = monthly_data %>%
     dplyr::select(-c(year)) %>%
-    pivot_longer(cols = -c(month), names_to = "var", values_to = "value") 
+    tidyr::pivot_longer(cols = -c(month), names_to = "var", values_to = "value") 
   
   
   ggplotly(ggplot(data_plot,aes(month, value, fill= var, group = month)) +
@@ -125,7 +125,7 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
   
   data_plot_clim = data_trim %>%
     dplyr::select(-c(year)) %>%
-    pivot_longer(cols = -c(season,Clase), names_to = "var", values_to = "value") 
+    tidyr::pivot_longer(cols = -c(season,Clase), names_to = "var", values_to = "value") 
   
   
    resampling_y$condtion = factor(resampling_y$condtion, c("above", "normal", "below"))
@@ -133,7 +133,7 @@ plot_clima_trim <- function(data_historic, resampling_y,trim_ini,id_label = NULL
   
   data_plot_res = resampling_y %>%
     dplyr::select(-c(year,id,order,condtion)) %>%
-    pivot_longer(cols = -c(season,Clase), names_to = "var", values_to = "value") 
+    tidyr::pivot_longer(cols = -c(season,Clase), names_to = "var", values_to = "value") 
   
   all_to_plot = bind_rows(data_plot_clim,data_plot_res)
   all_to_plot$season = factor(all_to_plot$season,
