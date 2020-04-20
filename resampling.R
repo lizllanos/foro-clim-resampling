@@ -9,7 +9,7 @@
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
 # Packages
 # =-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-
-list.of.packages <- c('tidyverse','data.table', 'lubridate', 'rjson','stringr','plotly','gridExtra','grid')
+list.of.packages <- c('tidyverse','data.table', 'lubridate', 'rjson','stringr','plotly','gridExtra','grid','tidyr')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
 if(length(new.packages) > 0) install.packages(new.packages,dependencies = TRUE)
@@ -20,7 +20,7 @@ library(data.table)
 library(lubridate)
 library(plotly)
 library(gridExtra)
-
+library(tidyr)
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # Resampling Methodology 
 
