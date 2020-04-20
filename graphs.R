@@ -1,5 +1,5 @@
 # Graficos remuestreo -----------------------------------------------------
-library(tidyverse)
+#library(tidyverse)
 library(data.table)
 library(lubridate)
 library(plotly)
